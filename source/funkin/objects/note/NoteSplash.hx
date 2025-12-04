@@ -56,14 +56,11 @@ class NoteSplash extends FlxSpriteExt implements INoteData
     public function loadSkin(?skin:String):Void {
 		skin ??= SkinUtil.curSkin;
 
-        var vanilla:Bool = Preferences.getPref('vanilla-ui');
-        if (vanilla) skin = "default";
-		
         if (curSkin != skin) {
             var skinData = SkinUtil.getSkinData(skin);
             if (skinData.splashData != null) {
                 curSkin = skin;
-                loadJsonInput(SkinUtil.getSkinData(curSkin).splashData, 'skins/$curSkin', false, vanilla ? 'skins/$curSkin/splashAssets-vanilla' : null);
+                loadJsonInput(SkinUtil.getSkinData(curSkin).splashData, 'skins/$curSkin', false, null);
             }
 		}
 	}

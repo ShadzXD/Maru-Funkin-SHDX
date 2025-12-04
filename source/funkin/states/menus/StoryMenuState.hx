@@ -216,7 +216,7 @@ class StoryMenuState extends MusicBeatState {
 	var targetColor:FlxColor;
 
 	inline function getBgColor():FlxColor {
-		return getPref("vanilla-ui") ? 0xfff9cf51 : FlxColorFix.fromString(getCurData().weekColor);
+		return  FlxColorFix.fromString(getCurData().weekColor);
 	}
 
 	override function update(elapsed:Float):Void {

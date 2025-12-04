@@ -48,7 +48,6 @@ class Preferences
         #end
         addPref('fps-counter',    'fps counter',     true);
         #end
-        addPref('vanilla-ui',     'vanilla ui',      false);
         addPref('stack-rating',   'stack ratings',   false);
         addPref('flashing-light', 'flashing lights', true);
         addPref('camera-zoom',    'camera zooms',    true);

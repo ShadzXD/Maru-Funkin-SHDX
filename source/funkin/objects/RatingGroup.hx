@@ -62,12 +62,6 @@ class RatingGroup extends TypedSpriteGroup<RemoveRating>
         if (combo < 10)
             return;
 
-        if (!cast(Preferences.getPref('vanilla-ui'), Bool)) {
-            final comboSpr:ComboRating = cast(recycle(ComboRating), ComboRating);
-            comboSpr.init();
-            addTop(comboSpr);
-        }
-
         var nums:String = Std.string(combo);
         var l:Int = nums.length;
         var i:Int = l;
@@ -174,7 +168,7 @@ class NumRating extends RemoveRating
             for (i in 0...10)
                 animation.add(Std.string(i), [i], 1);
             
-            setScale(0.6);
+            setScale(scale.x);
             initScale = scale.x;
         }
     }
@@ -198,7 +192,7 @@ class RemoveRating extends FlxSpriteExt
     public function new() {
         super();
         var skinData = SkinUtil.getSkinData(SkinUtil.curSkin);
-        setScale(0.6);
+        setScale(skinData.scale);
         lodLevel = LodLevel.resolve(skinData.allowLod ?? true);
         antialiasing = skinData.antialiasing ? Preferences.getPref('antialiasing') : false;
     }

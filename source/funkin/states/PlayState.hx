@@ -256,7 +256,7 @@ class PlayState extends MusicBeatState
 		add(watermark);
 		
 		// Set objects to HUD cam
-		for (i in [ratingGroup, notesGroup,hudClass])
+		for (i in [notesGroup,hudClass])
 			i.camera = camHUD;
 
 		startingSong = true;
