@@ -34,6 +34,8 @@ class Preferences
         addPref('botplay',        'botplay mode',    false);
         addPref('practice',       'practice mode',   false);
         addPref('downscroll',     'downscroll',      false);
+        addPref('middlescroll',     'middlescroll',      false);
+
         addPref('ghost-tap-style', 'ghost tapping', {array:["dad turn", "off", "on"], value:"off"});
         addPref('use-const-speed', 'use constant speed', false);
         addPref('const-speed', 'constant speed', 1.0);

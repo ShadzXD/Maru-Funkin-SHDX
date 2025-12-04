@@ -84,18 +84,11 @@ class HealthIcon extends FlxSpriteExt
 			case 8: 1.0;
 			default: 0.0;
 		}
-
-		if (Preferences.getPref('vanilla-ui')) {
-			bumpLerp = 0.75;
-			coolOffset = isPlayer ? 26 : _width - 26 ;
-		}
-		else {
-			bumpLerp = 0.15;
-			coolOffset = 23 + _width * 0.333;
-		}
+		bumpLerp = 0.75;
+		coolOffset = isPlayer ? 26 : _width - 26;
 	}
 
-	public function bumpIcon(bumpSize:Float = 1.2):Void {
+	public function bumpIcon(bumpSize:Float = 1.1):Void {
 		setScale(bumpSize * staticSize);
 		update(0);
 	}
@@ -121,10 +114,11 @@ class HealthIcon extends FlxSpriteExt
 	}
 
 	override function update(elapsed:Float):Void {
+		
 		var play = PlayState.instance;
 		if (playIcon && play != null)
 		{
-			var healthBar = play.healthBar;
+			var healthBar = play.hudClass.healthBar;
 			
 			if (isPlayer) {
 				isDying = healthBar.flipped ? healthBar.percent > 80 : healthBar.percent < 20;
@@ -141,6 +135,7 @@ class HealthIcon extends FlxSpriteExt
 		else {
 			setSprTrackerPos();
 		}
+			
 		
 		super.update(elapsed);
 	}

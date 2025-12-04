@@ -9,6 +9,6 @@
     "weekName": "pico",
     "weekColor": "0xFF941653",
     "storyCharacters": ["pico","bf","gf"],
-    "startUnlocked": false,
+    "startUnlocked": true,
     "unlockWeek": "week 4"
 }

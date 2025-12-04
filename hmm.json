@@ -1,0 +1,74 @@
+{
+  "dependencies": [
+    {
+      "name": "lime",
+      "type": "haxelib",
+      "version": "8.3.0"
+    },
+    {
+      "name": "openfl",
+      "type": "haxelib",
+      "version": "9.4.1"
+    },
+    {
+      "name": "flixel",
+      "type": "haxelib",
+      "version": "5.7.2"
+    },
+    {
+      "name": "flixel-addons",
+      "type": "haxelib",
+      "version": "3.2.2"
+    },
+    {
+      "name": "flixel-ui",
+      "type": "haxelib",
+      "version": "2.6.4"
+    },
+    {
+      "name": "hxcpp",
+      "type": "git",
+      "dir": null,
+      "ref": "4e24283a047f11bded6affabbc9ec405156e026e",
+      "url": "https://github.com/FunkinCrew/hxcpp"
+    },
+    {
+      "name": "hxcpp-debug-server",
+      "type": "git",
+      "dir": "hxcpp-debug-server",
+      "ref": "147294123f983e35f50a966741474438069a7a8f",
+      "url": "https://github.com/FunkinCrew/hxcpp-debugger"
+    },
+    {
+      "name": "hxvlc",
+      "type": "haxelib",
+      "version": "2.2.4"
+    },
+    {
+      "name": "hxdiscord_rpc",
+      "type": "haxelib",
+      "version": "1.2.4"
+    },
+    {
+      "name": "flixel-animate",
+      "type": "haxelib",
+      "version": "1.3.1"
+    },
+    {
+      "name": "moonchart",
+      "type": "git",
+      "dir": "moonchart",
+      "ref": "",
+      "url": "https://github.com/MaybeMaru/moonchart"
+    },
+    {
+      "name": "maru-hscript",
+      "type": "git",
+      "dir": "maru-hscript",
+      "ref": "",
+      "url": "https://github.com/MaybeMaru/hscript-improved"
+    }
+
+
+  ]
+}

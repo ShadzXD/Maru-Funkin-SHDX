@@ -9,6 +9,6 @@
     "weekName": "hating simulator ft. moawling",
     "weekColor": "0xFFFF78BF",
     "storyCharacters": ["senpai","bf","gf"],
-    "startUnlocked": false,
+    "startUnlocked": true,
     "unlockWeek": "week 7"
 }

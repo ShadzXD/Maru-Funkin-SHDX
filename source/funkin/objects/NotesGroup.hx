@@ -82,7 +82,7 @@ class NotesGroup extends Group
 			if (rating == "sick") spawnSplash(note); // Spawn splash
 		}
 
-		botplayCheck ? if (!vanillaUI) playStrumAnim(note) :
+		botplayCheck ? playStrumAnim(note) :
 		note.targetStrum.playStrumAnim('confirm', true);
 	}
 
@@ -101,11 +101,10 @@ class NotesGroup extends Group
 		}
 		else sustain.pressSustain();
 
-		botplayCheck ? if (!vanillaUI) playStrumAnim(sustain) :
+		botplayCheck ? playStrumAnim(sustain) :
 		sustain.targetStrum.playStrumAnim('confirm', true);
 	}
 
-	public var vanillaUI:Bool = false;
     
     public function new(song:SongJson, isPlayState:Bool = true) {
         super();
@@ -131,8 +130,7 @@ class NotesGroup extends Group
 		
 		songSpeed = getPref('use-const-speed') && isPlayState ? getPref('const-speed') : SONG.speed;
         inBotplay = getPref('botplay') && isPlayState;
-		vanillaUI = getPref('vanilla-ui');
-
+		
 		goodNoteHit = new FlxTypedSignal<Note->Void>();
 		goodSustainPress = new FlxTypedSignal<Sustain->Void>();
 		
@@ -221,8 +219,9 @@ class NotesGroup extends Group
 		StrumLineGroup.strumLineY = getPref('downscroll') ? FlxG.height - 150 : 50;
 		
 		opponentStrums = new StrumLineGroup(0);
+		opponentStrums.visible = getPref('middlescroll') ? false : true;
 		add(opponentStrums);
-		
+	
 		playerStrums = new StrumLineGroup(1);
 		add(playerStrums);
 
@@ -278,7 +277,6 @@ class NotesGroup extends Group
 				note.noteType = noteType;
 				note.noteSpeed = songSpeed;
 				unspawnNotes.push(note);
-
 				if (susLength > 0) {
 					var sustain:Sustain = new Sustain(noteData, strumTime, susLength, skin, note);
 					sustain.noteSpeed = songSpeed;
@@ -289,10 +287,12 @@ class NotesGroup extends Group
 						sustain.mustPress = mustPress;
 						sustain.noteType = noteType;
 						unspawnNotes.push(sustain);
-
+                        if(!note.mustPress && Preferences.getPref('middlescroll')) sustain.visible = false;
+					    
 						note.child = sustain;
 					}
 				}
+				if(!note.mustPress && Preferences.getPref('middlescroll')) note.visible = false;
 
 				//	Add notetype for scripts
 				if (!songNotetypes.contains(noteType)) {	

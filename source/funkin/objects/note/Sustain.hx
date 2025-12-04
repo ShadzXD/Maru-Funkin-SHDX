@@ -14,7 +14,7 @@ class Sustain extends BasicNote
         this.parent = parent;
         isSustainNote = true;
         drawStyle = BOTTOM_TOP;
-        alpha = 0.6;
+        alpha = 0.7;
         
         if (initSus) {
             yDisplace = NoteUtil.noteHeight * 0.5;

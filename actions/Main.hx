@@ -23,6 +23,7 @@ class Main
 {
 	public static function main():Void
 	{
+		#if sys
 		// To prevent messing with currently installed libs
 		if (!FileSystem.exists('.haxelib'))
 			FileSystem.createDirectory('.haxelib');
@@ -44,5 +45,6 @@ class Main
 		}
 
 		Sys.exit(0); // shutting this down
+		#end
 	}
 }

@@ -105,6 +105,7 @@ class BasicNote extends SmartSprite implements INoteData implements ITimingObjec
     override function update(elapsed:Float):Void {
         super.update(elapsed);
         if (targetStrum != null) {
+            
             if (moving) moveToStrum();
             activeNote = Conductor.songPosition < (strumTime + susLength + getPosMill(NoteUtil.noteHeight * 2));
         }

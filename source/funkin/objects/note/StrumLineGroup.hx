@@ -11,10 +11,12 @@ class StrumLineGroup extends TypedSpriteGroup<NoteStrum>
 
     public function new(p:Int = 0, lanes:Int = Conductor.NOTE_DATA_LENGTH) {
         super(9);
-        startX = NoteUtil.noteWidth * 0.666 + (FlxG.width * 0.5) * p;
+
+        startX = Preferences.getPref('middlescroll') ?  (FlxG.width * 0.32)  : NoteUtil.noteWidth * 0.666 + (FlxG.width * 0.5) * p;
         offsetY = Preferences.getPref('downscroll') ? 10 : -10;
-        
+
         final isPlayer:Bool = p == 1;
+
         for (i in 0...lanes) {
 			var strumNote = addStrum(i);
 			ModdingUtil.addCall('generateStrum', [strumNote, isPlayer]);

@@ -2,9 +2,8 @@ package funkin.states;
 
 import funkin.objects.*;
 import funkin.objects.note.*;
-import funkin.objects.funkui.FunkBar;
 import funkin.objects.FunkCamera.AngledCamera;
-
+import funkin.objects.ui.*;
 @:build(macros.GetSetBuilder.build(["notes", "unspawnNotes", "controlArray", "playerStrums", "opponentStrums", "grpNoteSplashes", "curSong", "generatedMusic", "skipStrumIntro", "inBotplay", "dadBotplay"], "notesGroup"))
 @:build(macros.GetSetBuilder.buildGet(["strumLineNotes", "strumLineInitPos", "playerStrumsInitPos", "opponentStrumsInitPos"], "notesGroup"))
 class PlayState extends MusicBeatState
@@ -53,7 +52,8 @@ class PlayState extends MusicBeatState
 	public var combo:Int = 0;
 	public var health(default, set):Float = 1;
 	function set_health(value:Float) {
-		healthBar.updateBar(value = FlxMath.bound(value, 0, 2));
+		if(!useHealth) return value;
+		hudClass.healthBar.updateBar(value = FlxMath.bound(value, 0, 2));
 		if (value == 0) if (validScore)
 			openGameOverSubstate();
 		return health = value;
@@ -62,11 +62,6 @@ class PlayState extends MusicBeatState
 	public var noteCount:Int = 0;
 	public var noteTotal:Float = 0;
 
-	private var iconGroup:SpriteGroup;
-	private var iconP1:HealthIcon;
-	private var iconP2:HealthIcon;
-	public var healthBar:FunkBar;
-
 	public var camGame:AngledCamera;
 	public var camHUD:FunkCamera;
 	public var camOther:FunkCamera;
@@ -74,8 +69,6 @@ class PlayState extends MusicBeatState
 	public var songLength:Float = 0;
 	public var songScore:Int = 0;
 	public var songMisses:Int = 0;
-	public var scoreTxt:FlxFunkText;
-	var watermark:FunkinSprite;
 
 	public static var campaignScore:Int = 0;
 
@@ -87,13 +80,14 @@ class PlayState extends MusicBeatState
 	public var inCutscene:Bool = false;
 	public var inDialogue:Bool = true;
 	public var dialogueBox:DialogueBoxBase = null;
-
+    public var watermark:FunkinSprite;
 	// Discord RPC variables
 	#if discord_rpc
 	var iconRPC:String = "";
 	var detailsText:String = "";
 	var detailsPausedText:String = "";
 	#end
+ 
 	inline function formatDiff() return CoolUtil.formatStringUpper(curDifficulty); // For discord rpc
 
 	public var ghostTapEnabled:Bool = false;
@@ -102,6 +96,8 @@ class PlayState extends MusicBeatState
 	
 	public var pauseSubstate:PauseSubState;
 
+	public var hudClass:MainHUD;
+	var useHealth:Bool;
 	override public function create():Void {
 		instance = this;
 
@@ -194,11 +190,10 @@ class PlayState extends MusicBeatState
 		gfOpponent = (SONG.players[1] == SONG.players[2]) && dad.isGF;
 		stage.setupPlayState(this, true);
 
-		iconGroup = new SpriteGroup();
-		iconP1 = new HealthIcon(boyfriend.icon, true, true);
-		iconP2 = new HealthIcon(dad.icon, false, true);
-		dad.iconSpr = iconP2;
-		boyfriend.iconSpr = iconP1;
+		hudClass = new MaruHUD();
+		useHealth = hudClass.useHealth;
+		dad.iconSpr = hudClass.iconP2;
+		boyfriend.iconSpr = hudClass.iconP1;
 
 		//Character Scripts
 		boyfriend.type = BF; dad.type = DAD; gf.type = GF;
@@ -213,11 +208,16 @@ class PlayState extends MusicBeatState
 		//Global Scripts
 		ModdingUtil.addScriptFolder('data/scripts/global');
 
-		notesGroup = new NotesGroup(SONG);
+		ratingGroup = new RatingGroup(boyfriend);
+		add(ratingGroup);
 
 		targetLayer = stage.getLayer("bg");
 		ModdingUtil.addCall('create');
 		targetLayer = null;
+
+		add(hudClass);
+
+		notesGroup = new NotesGroup(SONG);
 
 		add(notesGroup);
 		notesGroup.init();
@@ -245,29 +245,6 @@ class PlayState extends MusicBeatState
 		camGame.zoom = defaultCamZoom;
 		snapCamera();
 
-		healthBar = new FunkBar(0, !getPref('downscroll') ? FlxG.height * 0.9 : FlxG.height * 0.1, SkinUtil.getAssetKey("healthBar"));
-		healthBar.screenCenter(X);
-		add(healthBar);
-
-		add(iconGroup);
-		iconGroup.add(iconP1); iconGroup.add(iconP2);
-		healthBar.drawComplex(camGame); iconGroup.update(0.0); // Move the icons to the healthbar
-
-		scoreTxt = new FlxFunkText(0, healthBar.y + 30, "", FlxPoint.weak(FlxG.width, 20));
-		add(scoreTxt);
-
-		if (getPref('vanilla-ui')) {
-			scoreTxt.setPosition(healthBar.x + healthBar.width - 190, healthBar.y + 30);
-			scoreTxt.style = TextStyle.OUTLINE(1, 6, FlxColor.BLACK);
-		}
-		else {
-			scoreTxt.size = 20;
-			scoreTxt.style = TextStyle.OUTLINE(2, 6, FlxColor.BLACK);
-			scoreTxt.alignment = "center";
-		}
-
-		ratingGroup = new RatingGroup(boyfriend);
-		add(ratingGroup);
 		updateScore();
 
 		watermark = new FunkinSprite(SkinUtil.getAssetKey("watermark"), [FlxG.width, getPref('downscroll') ? 0 : FlxG.height], [0,0]);
@@ -277,9 +254,9 @@ class PlayState extends MusicBeatState
 		watermark.x -= watermark.width * 1.2; watermark.y -= watermark.height * (getPref('downscroll') ? -0.2 : 1.2);
 		watermark.alpha = validScore ? 0 : 0.8;
 		add(watermark);
-
+		
 		// Set objects to HUD cam
-		for (i in [notesGroup,  healthBar, iconGroup, scoreTxt, watermark])
+		for (i in [ratingGroup, notesGroup,hudClass])
 			i.camera = camHUD;
 
 		startingSong = true;
@@ -492,32 +469,19 @@ class PlayState extends MusicBeatState
 	public var startedCountdown:Bool = false;
 	var canPause:Bool = true;
 	var canDebug:Bool = true;
+	var songRating:String = '?';
+	var songAccuracy:Null<Float>;
 
 	public function updateScore():Void {
-		var songAccuracy:Null<Float> = (noteCount > 0) ? 0 : null;
-		var songRating:String = '?';
-
+			songAccuracy= (noteCount > 0) ? 0 : null;
 		if (noteCount > 0) {
 			songAccuracy = (noteTotal/noteCount)*100;
 			songAccuracy = FlxMath.roundDecimal(songAccuracy, 2);
 			songRating = Highscore.getAccuracyRating(songAccuracy).toUpperCase();
 		}
-
-		scoreTxt.text = notesGroup.vanillaUI ?
-		'Score:$songScore' :
-		'Score: $songScore / Accuracy: ${(noteCount > 0) ? '$songAccuracy%' : ''} [$songRating] / Misses: $songMisses';
+       hudClass.updateScoreText(songScore, songMisses, songRating, songAccuracy);
 
 		ModdingUtil.addCall('updateScore', [songScore, songMisses, songAccuracy, songRating]);
-	}
-
-	var oldIconID:Int = 0; // Old icon easter egg
-	public var allowIconEasterEgg:Bool = true;
-	inline function changeOldIcon() {
-		switch (oldIconID = FlxMath.wrap(oldIconID + 1, 0, 2)) {
-			default: 	iconP1.makeIcon(boyfriend.icon); 	iconP2.makeIcon(dad.icon);
-			case 1: 	iconP1.makeIcon('bf-old'); 			iconP2.makeIcon('dad');
-			case 2: 	iconP1.makeIcon('bf-older'); 		iconP2.makeIcon('dad-older');
-		}
 	}
 
 	override public function update(elapsed:Float):Void {
@@ -533,9 +497,6 @@ class PlayState extends MusicBeatState
 					#if discord_rpc DiscordClient.changePresence(detailsPausedText, '${SONG.song} (${formatDiff()})', iconRPC); #end
 				}
 			}
-
-			if (allowIconEasterEgg) if (justPressed.NINE)
-				changeOldIcon();
 
 			if (justPressed.ONE) if (CoolUtil.debugMode)
 				endSong();
@@ -719,7 +680,6 @@ class PlayState extends MusicBeatState
 	}
 
 	inline function beatCharacters() {
-		iconP1.bumpIcon(); 			iconP2.bumpIcon();
 		boyfriend.danceInBeat(); 	dad.danceInBeat();
 		if (curBeat % gfSpeed == 0) gf.danceInBeat();
 	}
@@ -728,6 +688,7 @@ class PlayState extends MusicBeatState
 	{
 		super.beatHit(curBeat);
 		beatCharacters();
+		hudClass.beatHit();
 		ModdingUtil.addCallBasic('beatHit', curBeat);
 	}
 
@@ -820,7 +781,7 @@ class PlayState extends MusicBeatState
 	public function showUI(bool:Bool):Void {
 		#if mobile MobileTouch.setLayout(bool ? NOTES : NONE); #end
 		
-		final displayObjects:Array<FlxBasic> = [iconGroup, scoreTxt, healthBar, notesGroup, watermark];
+		final displayObjects:Array<FlxBasic> = [notesGroup, watermark];
 		displayObjects.fastForEach((object, i) -> object.visible = bool);
 	}
 

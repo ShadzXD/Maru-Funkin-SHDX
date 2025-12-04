@@ -9,6 +9,6 @@
     "weekName": "mommy must murder",
     "weekColor": "0xFFFC96D7",
     "storyCharacters": ["mom","bf","gf"],
-    "startUnlocked": false,
+    "startUnlocked": true,
     "unlockWeek": "week 5"
 }

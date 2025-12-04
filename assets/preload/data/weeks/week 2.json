@@ -9,6 +9,6 @@
     "weekName": "spooky month",
     "weekColor": "0xFF223344",
     "storyCharacters": ["spooky","bf","gf"],
-    "startUnlocked": false,
+    "startUnlocked": true,
     "unlockWeek": "week 3"
 }

@@ -174,7 +174,7 @@ class NumRating extends RemoveRating
             for (i in 0...10)
                 animation.add(Std.string(i), [i], 1);
             
-            setScale(scale.x);
+            setScale(0.6);
             initScale = scale.x;
         }
     }
@@ -198,7 +198,7 @@ class RemoveRating extends FlxSpriteExt
     public function new() {
         super();
         var skinData = SkinUtil.getSkinData(SkinUtil.curSkin);
-        setScale(skinData.scale);
+        setScale(0.6);
         lodLevel = LodLevel.resolve(skinData.allowLod ?? true);
         antialiasing = skinData.antialiasing ? Preferences.getPref('antialiasing') : false;
     }
