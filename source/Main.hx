@@ -6,7 +6,9 @@ import openfl.events.UncaughtErrorEvent;
 import openfl.Lib;
 import openfl.display.Sprite;
 import openfl.events.Event;
-
+#if desktop
+import openfl.audio.ALSoftConfig; // Just to make sure DCE doesn't remove this, since it's not directly referenced anywhere else.
+#end
 class InitState extends FlxState
 {
     override function create():Void

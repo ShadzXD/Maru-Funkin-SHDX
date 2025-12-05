@@ -66,7 +66,11 @@
 	<assets path='example_mods' rename='mods' embed='false' if="MODS_ALLOWED"/>
 	<assets path='art/readme.txt' rename='do NOT readme.txt' if="desktop" />
 	<assets path='art/preloaderArt.png' rename='assets/images/preloaderArt.png' if="desktop"/>
-
+	<!-- OpenAL config -->
+	<section if="desktop">
+		<assets path="alsoft.txt" rename="plugins/alsoft.ini" type="text" if="windows"/>
+		<assets path="alsoft.txt" rename="plugins/alsoft.conf" type="text" unless="windows"/>
+	</section>
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxedev set='webgl' if="web" />
